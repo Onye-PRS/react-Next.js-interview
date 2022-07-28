@@ -5,6 +5,7 @@ import { Button } from "antd";
 import { setSelectedDate } from "../redux/selectedDateSlice";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
+import { Reminder } from "./Reminder";
 
 export const Date = ({ date, isGrayOut }) => {
   const dispatch = useDispatch();
@@ -38,8 +39,8 @@ export const Date = ({ date, isGrayOut }) => {
       </div>
       {/* // TODO: CLICK A REMINDER  */}
       <div>
-        {reminders.map((remind,i) => (
-          <div key={remind.date + i}>{remind.message}</div>
+        {reminders.map((reminder, i) => (
+          <Reminder reminder={reminder} />
         ))}
       </div>
     </div>
