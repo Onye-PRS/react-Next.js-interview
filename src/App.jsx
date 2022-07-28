@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import {Calendar} from './calendar/Calendar.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -12,6 +13,7 @@ function App() {
           count is {count}
         </button>
       </div>
+      <Calendar />
     </div>
   )
 }
