@@ -2,12 +2,13 @@ import { currentDayNum } from "./cal.module.scss";
 import { Modal } from "./Modal";
 import { useState } from "react";
 import { Button } from "antd";
-import { clearSelectedDate, setSelectedDate } from "../redux/selectedDateSlice";
+import { setSelectedDate } from "../redux/selectedDateSlice";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
 
 export const Date = ({ date, isGrayOut }) => {
   const dispatch = useDispatch();
+
   const reminders = useSelector((state) => {
     const reminderDates = Object.keys(state.calender.reminders);
     const startOfDate = date.set("hour", 0).set("minute", 0).set("second", 0);
@@ -16,39 +17,30 @@ export const Date = ({ date, isGrayOut }) => {
       (date) =>
         dayjs(date).isAfter(startOfDate) && dayjs(date).isBefore(endOfDate)
     );
-    console.log("filter dates", filterDates)
-    return filterDates.map(date => state.calender.reminders[date])
+    console.log("filter dates", filterDates);
+    return filterDates.map((date) => state.calender.reminders[date]);
   });
-  console.log(reminders, 'reminders')
-  const [loading, setLoading] = useState(false);
+
   const [visible, setVisible] = useState(false);
+
   const showModal = () => {
-    console.log("showModal func called");
     if (!visible) {
       dispatch(setSelectedDate(date.format()));
       setVisible(true);
     }
   };
-  const handleCancel = () => {
-    dispatch(clearSelectedDate());
-    setVisible(false);
-  };
 
   return (
     <div className={`calDay ${isGrayOut ? "grayOut" : ""}`} onClick={showModal}>
-      <Modal
-        visible={visible}
-        loading={loading}
-        showModal={showModal}
-        handleCancel={handleCancel}
-        setVisible={setVisible}
-      />
+      <Modal visible={visible} setVisible={setVisible} />
       <div className={`${date.isToday() ? currentDayNum : ""}`}>
         {date.format("D")}
       </div>
       {/* // TODO: CLICK A REMINDER  */}
       <div>
-        {reminders.map(remind => <div>{remind.message}</div>)}
+        {reminders.map((remind,i) => (
+          <div key={remind.date + i}>{remind.message}</div>
+        ))}
       </div>
     </div>
   );

@@ -3,39 +3,36 @@ import { Button, Modal as AntModal, Form, Input, TimePicker } from "antd";
 import { CirclePicker } from "react-color";
 import "antd/dist/antd.css";
 import { useSelector, useDispatch } from "react-redux";
+import { clearSelectedDate } from "../redux/selectedDateSlice";
 import { createReminder } from "../redux/remindersSlice";
 import dayjs from "dayjs";
 
 //TODO: add a delete option
-export const Modal = ({ visible, handleCancel,setVisible }) => {
+export const Modal = ({ visible, setVisible }) => {
   const dispatch = useDispatch();
   const selectedDate = useSelector((state) => state.date.selected);
-  console.log("selectedDate:", selectedDate);
 
-  const handleSubmit = () => {};
   const [color, setColor] = useState("#389c98");
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [message, setMessage] = useState("");
   const [time, setTime] = useState(null);
 
   const resetState = () => {
-    setColor("#389c98")
-    setMessage("")
-    setTime(null)
-  }
+    setColor("#389c98");
+    setMessage("");
+    setTime(null);
+  };
 
-  const handleChangeComplete = (color) => {
-    console.log("HANDLE handleChangeComplete CALLED", color);
+  const onModalClose = () => {
+    dispatch(clearSelectedDate());
+    setVisible(false);
+    resetState();
+  };
+
+  const onColorPickerChange = (color) => {
     setColor(color.hex);
   };
 
-  const handleClick = () => {
-    setShowColorPicker((prev) => !prev);
-  };
-
-  const handleClose = () => {
-    setShowColorPicker(false);
-  };
   const handleMessage = (e) => {
     setMessage(e.target.value);
   };
@@ -43,8 +40,7 @@ export const Modal = ({ visible, handleCancel,setVisible }) => {
   const handleTimePicker = (time, timeString) => {
     setTime(time);
   };
-  const handleOk = () => {
-    console.log(time);
+  const handleCreateReminder = () => {
     dispatch(
       createReminder({
         color,
@@ -56,8 +52,8 @@ export const Modal = ({ visible, handleCancel,setVisible }) => {
           .format(),
       })
     );
-    resetState()
-    setVisible(false)
+    resetState();
+    setVisible(false);
   };
 
   return (
@@ -67,26 +63,31 @@ export const Modal = ({ visible, handleCancel,setVisible }) => {
         title={`Creating Reminder for ${dayjs(selectedDate).format(
           "MMMM D, YYYY"
         )}`}
-        onOk={handleOk}
-        onCancel={() => {
-          resetState()
-          handleCancel()
-        }}
+        onOk={handleCreateReminder}
+        onCancel={onModalClose}
         okText="Create"
         maskClosable={false}
       >
         <Input value={message} onChange={handleMessage} />
-        <TimePicker onChange={handleTimePicker} use12Hours format="h:mm a" value={time} />
+        <TimePicker
+          onChange={handleTimePicker}
+          use12Hours
+          format="h:mm a"
+          value={time}
+        />
         <div>
-          <div className="color-picker" onClick={handleClick}>
+          <div
+            className="color-picker"
+            onClick={() => setShowColorPicker((prev) => !prev)}
+          >
             <div style={{ background: color, width: "30px", height: "14px" }} />
           </div>
 
           {showColorPicker && (
-            <div onClick={handleClose}>
+            <div onClick={() => setShowColorPicker(false)}>
               <CirclePicker
                 color={color}
-                onChangeComplete={handleChangeComplete}
+                onChangeComplete={onColorPickerChange}
               />
             </div>
           )}
