@@ -3,16 +3,13 @@ import dayjs from "dayjs";
 import styles from "./cal.module.scss";
 
 export const Calendar = () => {
-  // dayjs stuff
   const weekdaysShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const now = dayjs();
-  const firstOfTheMonth = dayjs().date(1);
-  console.log(firstOfTheMonth);
   // react app state
-  const [currentMonth, setCurrentMonth] = useState(firstOfTheMonth);
+  const [currentMonth, setCurrentMonth] = useState(dayjs().date(1));
   console.log("currentMont", currentMonth);
+  // dayjs stuff
   const daysInMonth = currentMonth.daysInMonth();
-
+  const firstOfTheMonth = currentMonth.date(1);
   const currentDay = currentMonth.startOf("month").day();
   const daysInFirstWeek = 7 - currentDay;
   const remainDays = daysInMonth - daysInFirstWeek;
