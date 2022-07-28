@@ -1,7 +1,11 @@
+import { currentDayNum } from "./cal.module.scss";
+
 export const Date = ({ date, isGrayOut }) => {
   return (
     <div className={`calDay ${isGrayOut ? "grayOut" : ""}`}>
-      {date.format("D")}
+      <div className={`${date.isToday() ? currentDayNum : ""}`}>
+        {date.format("D")}
+      </div>
     </div>
   );
 };
