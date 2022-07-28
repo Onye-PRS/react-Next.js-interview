@@ -1,15 +1,26 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setSelectedDate } from "../redux/selectedDateSlice";
+import { deleteReminder } from "../redux/remindersSlice";
 
-export const Reminder = ({ reminder,setVisible }) => {
+import { Tag, message, Popconfirm } from "antd";
+
+export const Reminder = ({ reminder, setVisible }) => {
   const dispatch = useDispatch();
 
   const handleOnClick = () => {
     dispatch(setSelectedDate({ date: reminder.date, type: "edit" }));
-    setVisible(true)
+    setVisible(true);
   };
-
+  const confirm = (e) => {
+    dispatch(deleteReminder(reminder))
+    console.log(e);
+    message.success("Reminder Deleted");
+  };
+  const cancel = (e) => {
+    console.log(e);
+    // message.error("Click on No");
+  };
   return (
     <div
       key={reminder.date}
@@ -17,7 +28,27 @@ export const Reminder = ({ reminder,setVisible }) => {
       onClick={handleOnClick}
       className="reminder"
     >
-      {reminder.message}
+      <Tag
+        closable
+        onClose={(e) => {
+          console.log("tag on close function called");
+          e.preventDefault();
+        }}
+        closeIcon={
+          <Popconfirm
+            title="Are you sure to delete this task?"
+            onConfirm={confirm}
+            onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            {" "}
+            X{" "}
+          </Popconfirm>
+        }
+      >
+        {reminder.message}
+      </Tag>
     </div>
   );
 };
