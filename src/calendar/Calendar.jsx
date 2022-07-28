@@ -1,13 +1,19 @@
-import React from "react";
+import { useState } from "react";
 import dayjs from "dayjs";
 import styles from "./cal.module.scss";
 
 export const Calendar = () => {
+  // dayjs stuff
   const weekdaysShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const now = dayjs();
+  const firstOfTheMonth = dayjs().date(1);
+  console.log(firstOfTheMonth);
+  // react app state
+  const [currentMonth, setCurrentMonth] = useState(firstOfTheMonth);
+  console.log("currentMont", currentMonth);
+  const daysInMonth = currentMonth.daysInMonth();
 
-  const daysInMonth = now.daysInMonth();
-  const currentDay = now.startOf("month").day();
+  const currentDay = currentMonth.startOf("month").day();
   const daysInFirstWeek = 7 - currentDay;
   const remainDays = daysInMonth - daysInFirstWeek;
   const weeksToDisplay = Math.ceil(remainDays / 7);
@@ -15,14 +21,26 @@ export const Calendar = () => {
   const days = Array.from({ length: 7 }, (v, i) => i);
   console.log(days);
   const weeks = Array.from({ length: weeksToDisplay + 1 }, (v, i) => i);
-  const lastDay = now.endOf("month").day();
-  let dayCounter = 0;
+  const lastDay = currentMonth.endOf("month").day();
+  let dayCounter = -1;
 
   console.log("DAYS IN MONTH", daysInMonth);
   console.log("END OF MONTH day", lastDay);
+
+  const renderDay = (date, isGrayOut) => {
+    return <div className={`calDay ${isGrayOut ? "grayOut" : ""}`}>{date}</div>;
+  };
+
+  const changeMonth = (step) => {
+    setCurrentMonth((prev) => prev.add(step, "month"));
+  };
   return (
     <div>
-      <h2>{now.format("MMMM")}</h2>
+      <div className={styles.calYears}>
+        <button onClick={() => changeMonth(-1)}>⬅️</button>
+        <h2>{currentMonth.format("MMMM YYYY")}</h2>
+        <button onClick={() => changeMonth(1)}>➡️</button>
+      </div>
       <div className={styles.calHeader}>
         {weekdaysShort.map((dayName) => {
           return <div className="header-item">{dayName} </div>;
@@ -30,38 +48,52 @@ export const Calendar = () => {
       </div>
       <div>
         {weeks.map((week) => {
+          console.log("first", firstOfTheMonth.format("L"));
+          // case for first week on the month
           if (week === 0) {
             return (
               <div className={styles.calWeek}>
                 {days.map((dayBox, i) => {
                   if (dayBox < currentDay) {
-                    return <div className="calDay">NO DATE</div>;
+                    return renderDay(
+                      firstOfTheMonth
+                        .subtract(currentDay - dayBox, "day")
+                        .format("D"), true
+                    );
                   }
                   dayCounter++;
-                  return <div className="calDay">{dayCounter}</div>;
+                  return renderDay(
+                    firstOfTheMonth.add(dayCounter, "day").format("D")
+                  );
                 })}
               </div>
             );
           }
+          // case for last week in the month
           if (week === weeksToDisplay) {
             return (
               <div className={styles.calWeek}>
                 {days.map((dayBox, i) => {
-                  if (lastDay < dayBox) {
-                    return <div className="calDay">NO DATE</div>;
-                  }
                   dayCounter++;
-                  return <div className="calDay">{dayCounter}</div>;
+
+                  const isGrayedOut = dayCounter > daysInMonth
+                  return renderDay(
+                    firstOfTheMonth.add(dayCounter, "day").format("D"),
+                    isGrayedOut
+                  );
                 })}
               </div>
             );
           }
+
+          // case for all weeks in between
           return (
             <div className={styles.calWeek}>
               {days.map((dayBox, i) => {
                 dayCounter++;
-
-                return <div className="calDay">{dayCounter}</div>;
+                return renderDay(
+                  firstOfTheMonth.add(dayCounter, "day").format("D")
+                );
               })}
             </div>
           );
