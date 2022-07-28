@@ -1,48 +1,48 @@
 .calWeek {
-    display:flex;
-    justify-content: space-between;
-    :global {
-        .calDay {
-            border: 2px solid pink;
-            width: 100%;
-            height: 150px;
-            overflow: scroll;
-        }
-        .grayOut {
-            background: gray;
-        }
+  display: flex;
+  justify-content: space-between;
+  :global {
+    .calDay {
+      border: 2px solid pink;
+      width: 100%;
+      height: 150px;
+      overflow-y: auto;
     }
+    .grayOut {
+      background: gray;
+    }
+  }
 }
 .calHeader {
-    display: flex;
-    justify-content: space-between;
-    border: 2px solid red;
-    :global {
-        .header-item {
-            border: 2px solid black;
-            width: 100%;
-            text-align: center;
-        }
+  display: flex;
+  justify-content: space-between;
+  border: 2px solid red;
+  :global {
+    .header-item {
+      border: 2px solid black;
+      width: 100%;
+      text-align: center;
     }
+  }
 }
 
 .calYears {
-    display: flex;
+  display: flex;
 }
 
 .dayNum {
-    position: sticky;
-    top:0;
-    width:100%;
-    background-color: white;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background-color: white;
 }
 
 .currentDayNum {
-    border-radius: 50%;
-    background-color: #389c98;
-    width: 25px;
-    height: 25px;
-    line-height: 24px;
-    margin-bottom: 3px;
-    text-align: center;
+  border-radius: 50%;
+  background-color: #389c98;
+  width: 25px;
+  height: 25px;
+  line-height: 24px;
+  margin-bottom: 3px;
+  text-align: center;
 }

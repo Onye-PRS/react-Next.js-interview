@@ -13,7 +13,7 @@ export const Reminder = ({ reminder, setVisible }) => {
     setVisible(true);
   };
   const confirm = (e) => {
-    dispatch(deleteReminder(reminder))
+    dispatch(deleteReminder(reminder));
     console.log(e);
     message.success("Reminder Deleted");
   };
@@ -24,12 +24,13 @@ export const Reminder = ({ reminder, setVisible }) => {
   return (
     <div
       key={reminder.date}
-      style={{ background: reminder.color, color: "white" }}
+      style={{ background: reminder.color }}
       onClick={handleOnClick}
-      className="reminder"
+      id="reminder"
     >
       <Tag
         closable
+        id="reminder"
         onClose={(e) => {
           console.log("tag on close function called");
           e.preventDefault();
