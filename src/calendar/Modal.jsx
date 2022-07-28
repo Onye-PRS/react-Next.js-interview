@@ -7,7 +7,6 @@ import { clearSelectedDate } from "../redux/selectedDateSlice";
 import { createReminder } from "../redux/remindersSlice";
 import dayjs from "dayjs";
 
-//TODO: add a delete option
 export const Modal = ({ visible, setVisible }) => {
   const dispatch = useDispatch();
   const selected = useSelector((state) => state.selected);

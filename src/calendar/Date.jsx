@@ -1,4 +1,4 @@
-import { currentDayNum } from "./cal.module.scss";
+import { currentDayNum, dayNum } from "./cal.module.scss";
 import { Modal } from "./Modal";
 import { useState } from "react";
 import { Button } from "antd";
@@ -34,10 +34,13 @@ export const Date = ({ date, isGrayOut }) => {
   return (
     <div className={`calDay ${isGrayOut ? "grayOut" : ""}`} onClick={showModal}>
       <Modal visible={visible} setVisible={setVisible} />
-      <div className={`${date.isToday() ? currentDayNum : ""}`}>
-        {date.format("D")}
+      <div className={`${dayNum}`} style={{backgroundColor: isGrayOut? "gray": ""}}>
+        {/* if it is current day, add a white background */}
+        {date.isToday() && (
+          <div className={currentDayNum}>{date.format("D")}</div>
+        )}
+        {!date.isToday() && date.format("D")}
       </div>
-      {/* // TODO: CLICK A REMINDER  */}
       <div>
         {reminders.map((reminder, i) => (
           <Reminder reminder={reminder} setVisible={setVisible} />
