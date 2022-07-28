@@ -18,15 +18,15 @@ export const Date = ({ date, isGrayOut }) => {
       (date) =>
         dayjs(date).isAfter(startOfDate) && dayjs(date).isBefore(endOfDate)
     );
-    console.log("filter dates", filterDates);
+    // console.log("filter dates", filterDates);
     return filterDates.map((date) => state.calender.reminders[date]);
   });
 
   const [visible, setVisible] = useState(false);
 
-  const showModal = () => {
-    if (!visible) {
-      dispatch(setSelectedDate(date.format()));
+  const showModal = (e) => {
+    if (!visible && e.target.className !== "reminder") {
+      dispatch(setSelectedDate({ date: date.format(), type: "new" }));
       setVisible(true);
     }
   };
@@ -40,7 +40,7 @@ export const Date = ({ date, isGrayOut }) => {
       {/* // TODO: CLICK A REMINDER  */}
       <div>
         {reminders.map((reminder, i) => (
-          <Reminder reminder={reminder} />
+          <Reminder reminder={reminder} setVisible={setVisible} />
         ))}
       </div>
     </div>

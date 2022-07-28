@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Modal as AntModal, Form, Input, TimePicker } from "antd";
 import { CirclePicker } from "react-color";
 import "antd/dist/antd.css";
@@ -10,12 +10,32 @@ import dayjs from "dayjs";
 //TODO: add a delete option
 export const Modal = ({ visible, setVisible }) => {
   const dispatch = useDispatch();
-  const selectedDate = useSelector((state) => state.date.selected);
+  const selected = useSelector((state) => state.selected);
+  const selectedType = selected.type;
+  const selectedDate = selected.date;
+  const selectedReminder = useSelector(
+    (state) => state.calender.reminders[selectedDate]
+  );
+  // console.log('selectedReminder:', selectedReminder)
+  const defaultColor = "#389c98";
 
-  const [color, setColor] = useState("#389c98");
+  const [color, setColor] = useState(defaultColor);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [message, setMessage] = useState("");
   const [time, setTime] = useState(null);
+
+  useEffect(() => {
+    if (selectedType === "edit") {
+      setColor(selectedReminder.color);
+      setMessage(selectedReminder.message);
+      console.log("REMINDER TIME", dayjs(selectedReminder.date));
+      setTime(dayjs(selectedReminder.date));
+    } else {
+      setColor(defaultColor);
+      setMessage("");
+      setTime(null);
+    }
+  }, [selectedReminder, selectedType]);
 
   const resetState = () => {
     setColor("#389c98");
@@ -41,15 +61,21 @@ export const Modal = ({ visible, setVisible }) => {
     setTime(time);
   };
   const handleCreateReminder = () => {
+    let date;
+    if (selectedType === "edit") {
+      date = dayjs(time).format()
+    } else {
+      date = dayjs(selectedDate)
+        .set("hour", time.hour())
+        .set("minute", time.minutes())
+        .set("second", 0)
+        .format();
+    }
     dispatch(
       createReminder({
         color,
         message,
-        date: dayjs(selectedDate)
-          .set("hour", time.hour())
-          .set("minute", time.minutes())
-          .set("second", 0)
-          .format(),
+        date,
       })
     );
     resetState();

@@ -4,7 +4,7 @@ import calenderReducer from './redux/remindersSlice'
 
 export const store = configureStore({
     reducer: {
-        date: dateReducer,
+        selected: dateReducer,
         calender: calenderReducer
     }
 })

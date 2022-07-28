@@ -1,18 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    selected: null
+    date: null,
+    type: null
 }
 
 const dateReducer = createSlice({
-  name: 'date',
+  name: 'selected',
   initialState,
   reducers: {
     setSelectedDate(state, action) {
-      state.selected = action.payload
+      state.date = action.payload.date
+      state.type = action.payload.type
     },
     clearSelectedDate(state, action) {
-      state.selected = null
+      state.date = null
+      state.type = null
     },
     
   }
