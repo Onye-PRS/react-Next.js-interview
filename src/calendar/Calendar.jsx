@@ -48,51 +48,25 @@ export const Calendar = () => {
       </div>
       <div>
         {weeks.map((week) => {
-          console.log("first", firstOfTheMonth.format("L"));
-          // case for first week on the month
-          if (week === 0) {
-            return (
-              <div className={styles.calWeek}>
-                {days.map((dayBox, i) => {
-                  if (dayBox < currentDay) {
-                    return renderDay(
-                      firstOfTheMonth
-                        .subtract(currentDay - dayBox, "day")
-                        .format("D"), true
-                    );
-                  }
-                  dayCounter++;
-                  return renderDay(
-                    firstOfTheMonth.add(dayCounter, "day").format("D")
-                  );
-                })}
-              </div>
-            );
-          }
-          // case for last week in the month
-          if (week === weeksToDisplay) {
-            return (
-              <div className={styles.calWeek}>
-                {days.map((dayBox, i) => {
-                  dayCounter++;
-
-                  const isGrayedOut = dayCounter > daysInMonth
-                  return renderDay(
-                    firstOfTheMonth.add(dayCounter, "day").format("D"),
-                    isGrayedOut
-                  );
-                })}
-              </div>
-            );
-          }
-
-          // case for all weeks in between
           return (
             <div className={styles.calWeek}>
               {days.map((dayBox, i) => {
+                // handle displaying previous month days
+                if (dayBox < currentDay && week === 0) {
+                  return renderDay(
+                    firstOfTheMonth
+                      .subtract(currentDay - dayBox, "day")
+                      .format("D"),
+                    true
+                  );
+                }
+                // gray out the displaying dates of next month
                 dayCounter++;
+                const isGrayedOut = dayCounter >= daysInMonth;
+
                 return renderDay(
-                  firstOfTheMonth.add(dayCounter, "day").format("D")
+                  firstOfTheMonth.add(dayCounter, "day").format("D"),
+                  isGrayedOut
                 );
               })}
             </div>
