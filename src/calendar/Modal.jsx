@@ -68,7 +68,13 @@ export const Modal = ({ visible, setVisible }) => {
         okText="Create"
         maskClosable={false}
       >
-        <Input value={message} onChange={handleMessage} />
+        <Input
+          value={message}
+          onChange={handleMessage}
+          maxLength={30}
+          showCount={true}
+          placeholder="add your reminder"
+        />
         <TimePicker
           onChange={handleTimePicker}
           use12Hours
