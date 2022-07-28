@@ -10,13 +10,11 @@ export const Calendar = () => {
   // dayjs stuff
   const daysInMonth = currentMonth.daysInMonth();
   const firstOfTheMonth = currentMonth.date(1);
-  const currentDay = currentMonth.startOf("month").day();
-  const daysInFirstWeek = 7 - currentDay;
+  const startingDay = currentMonth.startOf("month").day();
+  const daysInFirstWeek = 7 - startingDay;
   const remainDays = daysInMonth - daysInFirstWeek;
   const weeksToDisplay = Math.ceil(remainDays / 7);
-  console.log("REMIND", remainDays, weeksToDisplay);
-  const days = Array.from({ length: 7 }, (v, i) => i);
-  console.log(days);
+  const daysOfAWeek = Array.from({ length: 7 }, (v, i) => i);
   const weeks = Array.from({ length: weeksToDisplay + 1 }, (v, i) => i);
   const lastDay = currentMonth.endOf("month").day();
   let dayCounter = -1;
@@ -47,12 +45,12 @@ export const Calendar = () => {
         {weeks.map((week) => {
           return (
             <div className={styles.calWeek}>
-              {days.map((dayBox, i) => {
+              {daysOfAWeek.map((dayBox, i) => {
                 // handle displaying previous month days
-                if (dayBox < currentDay && week === 0) {
+                if (dayBox < startingDay && week === 0) {
                   return renderDay(
                     firstOfTheMonth
-                      .subtract(currentDay - dayBox, "day")
+                      .subtract(startingDay - dayBox, "day")
                       .format("D"),
                     true
                   );
