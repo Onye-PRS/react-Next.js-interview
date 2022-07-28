@@ -23,6 +23,8 @@ export const Modal = ({ visible, setVisible }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [message, setMessage] = useState("");
   const [time, setTime] = useState(null);
+  const [title, setTitle] = useState(null)
+  const [okText, setOkText] = useState(null)
 
   useEffect(() => {
     if (selectedType === "edit") {
@@ -30,10 +32,17 @@ export const Modal = ({ visible, setVisible }) => {
       setMessage(selectedReminder.message);
       console.log("REMINDER TIME", dayjs(selectedReminder.date));
       setTime(dayjs(selectedReminder.date));
+      setTitle(`Editing your Reminder for ${dayjs(selectedDate).format(
+        "MMMM D, YYYY")}`)
+      setOkText('Save')
     } else {
       setColor(defaultColor);
       setMessage("");
       setTime(null);
+      setTitle(`Creating Reminder for ${dayjs(selectedDate).format(
+        "MMMM D, YYYY"
+      )}`)
+      setOkText('Create')
     }
   }, [selectedReminder, selectedType]);
 
@@ -86,12 +95,10 @@ export const Modal = ({ visible, setVisible }) => {
     <>
       <AntModal
         visible={visible}
-        title={`Creating Reminder for ${dayjs(selectedDate).format(
-          "MMMM D, YYYY"
-        )}`}
+        title={title}
         onOk={handleCreateReminder}
         onCancel={onModalClose}
-        okText="Create"
+        okText={okText}
         maskClosable={false}
       >
         <Input
