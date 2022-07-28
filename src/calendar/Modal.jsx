@@ -4,7 +4,7 @@ import { CirclePicker } from "react-color";
 import "antd/dist/antd.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearSelectedDate } from "../redux/selectedDateSlice";
-import { createReminder } from "../redux/remindersSlice";
+import { createReminder, deleteReminder } from "../redux/remindersSlice";
 import dayjs from "dayjs";
 
 export const Modal = ({ visible, setVisible }) => {
@@ -22,26 +22,28 @@ export const Modal = ({ visible, setVisible }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [message, setMessage] = useState("");
   const [time, setTime] = useState(null);
-  const [title, setTitle] = useState(null)
-  const [okText, setOkText] = useState(null)
+  const [title, setTitle] = useState(null);
+  const [okText, setOkText] = useState(null);
 
   useEffect(() => {
     if (selectedType === "edit") {
-      setColor(selectedReminder.color);
+      setColor(selectedReminder?.color);
       setMessage(selectedReminder.message);
-      console.log("REMINDER TIME", dayjs(selectedReminder.date));
       setTime(dayjs(selectedReminder.date));
-      setTitle(`Editing your Reminder for ${dayjs(selectedDate).format(
-        "MMMM D, YYYY")}`)
-      setOkText('Save')
+      setTitle(
+        `Editing your Reminder for ${dayjs(selectedDate).format(
+          "MMMM D, YYYY"
+        )}`
+      );
+      setOkText("Save");
     } else {
       setColor(defaultColor);
       setMessage("");
       setTime(null);
-      setTitle(`Creating Reminder for ${dayjs(selectedDate).format(
-        "MMMM D, YYYY"
-      )}`)
-      setOkText('Create')
+      setTitle(
+        `Creating Reminder for ${dayjs(selectedDate).format("MMMM D, YYYY")}`
+      );
+      setOkText("Create");
     }
   }, [selectedReminder, selectedType]);
 
@@ -52,7 +54,6 @@ export const Modal = ({ visible, setVisible }) => {
   };
 
   const onModalClose = () => {
-    dispatch(clearSelectedDate());
     setVisible(false);
     resetState();
   };
@@ -69,15 +70,13 @@ export const Modal = ({ visible, setVisible }) => {
     setTime(time);
   };
   const handleCreateReminder = () => {
-    let date;
+    const date = dayjs(selectedDate)
+      .set("hour", time.hour())
+      .set("minute", time.minute())
+      .set("second", new Date().getSeconds()) // even tho user doesn't select seconds, I need them so reminders created with the same time do not overwrite each other
+      .format();
     if (selectedType === "edit") {
-      date = dayjs(time).format()
-    } else {
-      date = dayjs(selectedDate)
-        .set("hour", time.hour())
-        .set("minute", time.minutes())
-        .set("second", 0)
-        .format();
+      dispatch(deleteReminder(selectedReminder));
     }
     dispatch(
       createReminder({
@@ -86,6 +85,7 @@ export const Modal = ({ visible, setVisible }) => {
         date,
       })
     );
+    dispatch(clearSelectedDate());
     resetState();
     setVisible(false);
   };
