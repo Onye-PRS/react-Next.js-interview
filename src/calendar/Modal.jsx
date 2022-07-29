@@ -175,6 +175,7 @@ export const Modal = ({ visible, setVisible }) => {
                   maxLength={30}
                   showCount={true}
                   placeholder="add your reminder"
+                  onPressEnter={handleCreateReminder}
                 />
               </Space>
             </Col>
