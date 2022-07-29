@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
 import { Reminder } from "./Reminder";
 
-export const Date = ({ date, isGrayOut, index }) => {
+export const Date = ({ date, isGrayOut }) => {
   const dispatch = useDispatch();
 
   const reminders = useSelector((state) => {
@@ -42,7 +42,6 @@ export const Date = ({ date, isGrayOut, index }) => {
     <div
       className={`calDay ${isGrayOut ? "grayOut" : ""}`}
       onClick={showModal}
-      key={index}
     >
       <Modal visible={visible} setVisible={setVisible} />
       <div
@@ -56,8 +55,8 @@ export const Date = ({ date, isGrayOut, index }) => {
         {!date.isToday() && date.format("D")}
       </div>
       <div>
-        {reminders.map((reminder, i) => (
-          <Reminder reminder={reminder} setVisible={setVisible} index={i} />
+        {reminders.map((reminder) => (
+          <Reminder reminder={reminder} setVisible={setVisible} key={reminder.date} />
         ))}
       </div>
     </div>

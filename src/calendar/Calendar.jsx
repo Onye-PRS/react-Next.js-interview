@@ -25,8 +25,8 @@ export const Calendar = () => {
   const weeks = Array.from({ length: weeksToDisplay + 1 }, (v, i) => i);
   let dayCounter = -1;
 
-  const renderDay = (date, isGrayOut, i) => {
-    return <Date date={date} isGrayOut={isGrayOut} index={i} />;
+  const renderDay = (date, isGrayOut) => {
+    return <Date date={date} isGrayOut={isGrayOut} key={date} />;
   };
 
   const changeMonth = (step) => {
@@ -64,16 +64,15 @@ export const Calendar = () => {
         })}
       </div>
       <div>
-        {weeks.map((week, i) => {
+        {weeks.map((week) => {
           return (
-            <div className={styles.calWeek} key={i}>
+            <div className={styles.calWeek} key={week}>
               {daysOfAWeek.map((dayBox, i) => {
                 // handle displaying previous month days
                 if (dayBox < startingDay && week === 0) {
                   return renderDay(
                     firstOfTheMonth.subtract(startingDay - dayBox, "day"),
-                    true,
-                    i
+                    true
                   );
                 }
                 // gray out the displaying dates of next month
@@ -82,8 +81,7 @@ export const Calendar = () => {
 
                 return renderDay(
                   firstOfTheMonth.add(dayCounter, "day"),
-                  isGrayedOut,
-                  i
+                  isGrayedOut
                 );
               })}
             </div>

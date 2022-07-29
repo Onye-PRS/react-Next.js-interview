@@ -6,7 +6,7 @@ import { colorMap } from "../util/colorMap";
 import styles from "./reminder.module.scss";
 import dayjs from "dayjs";
 
-export const Reminder = ({ reminder, setVisible, index }) => {
+export const Reminder = ({ reminder, setVisible }) => {
   const dispatch = useDispatch();
 
   const handleOnClick = (e) => {
@@ -16,7 +16,7 @@ export const Reminder = ({ reminder, setVisible, index }) => {
   };
 
   return (
-    <div key={index} onClick={handleOnClick} className={styles.reminder}>
+    <div key={reminder.date} onClick={handleOnClick} className={styles.reminder}>
       <Tag
         closable
         onClose={(e) => {
