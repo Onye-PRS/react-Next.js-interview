@@ -8,6 +8,7 @@ import {
   Row,
   Col,
 } from "antd";
+import DatePicker from "../util/DatePicker";
 import { CirclePicker } from "react-color";
 import "antd/dist/antd.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -28,31 +29,28 @@ export const Modal = ({ visible, setVisible }) => {
   const defaultColor = "#c41d7f";
 
   const [color, setColor] = useState(defaultColor);
-  const [showColorPicker, setShowColorPicker] = useState(false);
   const [message, setMessage] = useState("");
   const [time, setTime] = useState(null);
   const [title, setTitle] = useState(null);
   const [okText, setOkText] = useState(null);
-
+  const [date, setDate] = useState(null);
   useEffect(() => {
     if (selectedType === "edit") {
       setColor(selectedReminder?.color);
       setMessage(selectedReminder.message);
       setTime(dayjs(selectedReminder.date));
       setTitle(
-        `Editing your Reminder on ${dayjs(selectedDate).format(
-          "MMMM D, YYYY"
-        )}`
+        `Editing your Reminder on ${dayjs(selectedDate).format("MMMM D, YYYY")}`
       );
       setOkText("Save");
+      setDate(dayjs(selectedReminder.date))
     } else {
       setColor(defaultColor);
       setMessage("");
-      setTime(null);
-      setTitle(
-        `Creating Reminder on ${dayjs(selectedDate).format("MMMM D, YYYY")}`
-      );
+      setTime(dayjs());
+      setTitle("Create Reminder");
       setOkText("Create");
+      setDate(dayjs(selectedDate))
     }
   }, [selectedReminder, selectedType]);
 
@@ -63,6 +61,7 @@ export const Modal = ({ visible, setVisible }) => {
   };
 
   const onModalClose = () => {
+    dispatch(clearSelectedDate());
     setVisible(false);
     resetState();
   };
@@ -75,11 +74,14 @@ export const Modal = ({ visible, setVisible }) => {
     setMessage(e.target.value);
   };
 
-  const handleTimePicker = (time, timeString) => {
+  const handleTimePicker = (time) => {
     setTime(time);
   };
+  const handleDatePicker = (date) => {
+    setDate(dayjs(date));
+  };
   const handleCreateReminder = () => {
-    const date = dayjs(selectedDate)
+    const savedDate = dayjs(date)
       .set("hour", time.hour())
       .set("minute", time.minute())
       .set("second", new Date().getSeconds()) // even tho user doesn't select seconds, I need them so reminders created with the same time do not overwrite each other
@@ -91,7 +93,7 @@ export const Modal = ({ visible, setVisible }) => {
       createReminder({
         color,
         message,
-        date,
+        date: savedDate,
       })
     );
     dispatch(clearSelectedDate());
@@ -108,44 +110,61 @@ export const Modal = ({ visible, setVisible }) => {
         onCancel={onModalClose}
         okText={okText}
         maskClosable={false}
+        destroyOnClose={true}
+        okButtonProps={{disabled: !message.trim()}}
       >
         <Row gutter={[0, 32]}>
-          <Col span={12}>
-            <Space direction="vertical" size="middle">
-              <label>Select Time:</label>
-              <TimePicker
-                onChange={handleTimePicker}
-                use12Hours
-                format="h:mm a"
-                value={time}
-              />
-            </Space>
-          </Col>
+          <Row style={{ width: "100%" }}>
+            <Col span={12}>
+              <Space direction="vertical" size="middle">
+                <label>Select Date:</label>
+                <DatePicker
+                  onChange={handleDatePicker}
+                  format="MM-DD-YYYY"
+                  value={date}
+                  allowClear={false}
+                />
+              </Space>
+            </Col>
+            <Col span={12}>
+              <Space direction="vertical" size="middle">
+                <label>Select Time:</label>
+                <TimePicker
+                  onChange={handleTimePicker}
+                  use12Hours
+                  format="h:mm a"
+                  value={time}
+                  allowClear={false}
+                />
+              </Space>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <Space direction="vertical" size="middle">
+                <Space size="middle">
+                  <label>Select Color:</label>
+                  <div className="color-picker">
+                    <div
+                      style={{
+                        background: color,
+                        width: "30px",
+                        height: "14px",
+                      }}
+                    />
+                  </div>
+                </Space>
 
-          <Col span={12}>
-            <Space direction="vertical" size="middle">
-              <Space size="middle">
-                <label>Select Color:</label>
-                <div
-                  className="color-picker"
-                  onClick={() => setShowColorPicker((prev) => !prev)}
-                >
-                  <div
-                    style={{ background: color, width: "30px", height: "14px" }}
+                <div>
+                  <CirclePicker
+                    color={color}
+                    colors={Object.keys(colorMap)}
+                    onChangeComplete={onColorPickerChange}
                   />
                 </div>
               </Space>
-
-              <div onClick={() => setShowColorPicker(false)}>
-                <CirclePicker
-                  color={color}
-                  colors={Object.keys(colorMap)}
-                  onChangeComplete={onColorPickerChange}
-                />
-              </div>
-            </Space>
-          </Col>
-
+            </Col>
+          </Row>
           <Row style={{ width: "100%" }}>
             <Col span={24}>
               <Space direction="vertical" style={{ width: "100%" }}>
