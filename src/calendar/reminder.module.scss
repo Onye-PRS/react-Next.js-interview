@@ -1,0 +1,8 @@
+.reminder {
+    :global {
+        span[aria-label="close"] {
+            float: right;
+            padding-top: 4px;
+        }
+    }
+}

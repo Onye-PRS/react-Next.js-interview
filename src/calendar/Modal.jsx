@@ -1,10 +1,19 @@
 import { useState, useEffect } from "react";
-import { Button, Modal as AntModal, Form, Input, TimePicker } from "antd";
+import {
+  Modal as AntModal,
+  Form,
+  Input,
+  TimePicker,
+  Space,
+  Row,
+  Col,
+} from "antd";
 import { CirclePicker } from "react-color";
 import "antd/dist/antd.css";
 import { useSelector, useDispatch } from "react-redux";
 import { clearSelectedDate } from "../redux/selectedDateSlice";
 import { createReminder, deleteReminder } from "../redux/remindersSlice";
+import { colorMap } from "../util/colorMap";
 import dayjs from "dayjs";
 
 export const Modal = ({ visible, setVisible }) => {
@@ -15,8 +24,8 @@ export const Modal = ({ visible, setVisible }) => {
   const selectedReminder = useSelector(
     (state) => state.calender.reminders[selectedDate]
   );
-  // console.log('selectedReminder:', selectedReminder)
-  const defaultColor = "#389c98";
+
+  const defaultColor = "#c41d7f";
 
   const [color, setColor] = useState(defaultColor);
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -31,7 +40,7 @@ export const Modal = ({ visible, setVisible }) => {
       setMessage(selectedReminder.message);
       setTime(dayjs(selectedReminder.date));
       setTitle(
-        `Editing your Reminder for ${dayjs(selectedDate).format(
+        `Editing your Reminder on ${dayjs(selectedDate).format(
           "MMMM D, YYYY"
         )}`
       );
@@ -41,7 +50,7 @@ export const Modal = ({ visible, setVisible }) => {
       setMessage("");
       setTime(null);
       setTitle(
-        `Creating Reminder for ${dayjs(selectedDate).format("MMMM D, YYYY")}`
+        `Creating Reminder on ${dayjs(selectedDate).format("MMMM D, YYYY")}`
       );
       setOkText("Create");
     }
@@ -100,37 +109,58 @@ export const Modal = ({ visible, setVisible }) => {
         okText={okText}
         maskClosable={false}
       >
-        <Input
-          value={message}
-          onChange={handleMessage}
-          maxLength={30}
-          showCount={true}
-          placeholder="add your reminder"
-        />
-        <TimePicker
-          onChange={handleTimePicker}
-          use12Hours
-          format="h:mm a"
-          value={time}
-        />
-        <div>
-          <div
-            className="color-picker"
-            onClick={() => setShowColorPicker((prev) => !prev)}
-          >
-            <div style={{ background: color, width: "30px", height: "14px" }} />
-          </div>
-
-          {showColorPicker && (
-            <div onClick={() => setShowColorPicker(false)}>
-              <CirclePicker
-                color={color}
-                onChangeComplete={onColorPickerChange}
+        <Row gutter={[0, 32]}>
+          <Col span={12}>
+            <Space direction="vertical" size="middle">
+              <label>Select Time:</label>
+              <TimePicker
+                onChange={handleTimePicker}
+                use12Hours
+                format="h:mm a"
+                value={time}
               />
-            </div>
-          )}
-        </div>
-        <Form.Item label="color picker"></Form.Item>
+            </Space>
+          </Col>
+
+          <Col span={12}>
+            <Space direction="vertical" size="middle">
+              <Space size="middle">
+                <label>Select Color:</label>
+                <div
+                  className="color-picker"
+                  onClick={() => setShowColorPicker((prev) => !prev)}
+                >
+                  <div
+                    style={{ background: color, width: "30px", height: "14px" }}
+                  />
+                </div>
+              </Space>
+
+              <div onClick={() => setShowColorPicker(false)}>
+                <CirclePicker
+                  color={color}
+                  colors={Object.keys(colorMap)}
+                  onChangeComplete={onColorPickerChange}
+                />
+              </div>
+            </Space>
+          </Col>
+
+          <Row style={{ width: "100%" }}>
+            <Col span={24}>
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <label>Add Reminder:</label>
+                <Input
+                  value={message}
+                  onChange={handleMessage}
+                  maxLength={30}
+                  showCount={true}
+                  placeholder="add your reminder"
+                />
+              </Space>
+            </Col>
+          </Row>
+        </Row>
       </AntModal>
     </>
   );

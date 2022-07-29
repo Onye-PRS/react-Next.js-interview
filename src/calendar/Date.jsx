@@ -11,14 +11,13 @@ export const Date = ({ date, isGrayOut }) => {
   const dispatch = useDispatch();
 
   const reminders = useSelector((state) => {
-    const reminderDates = Object.keys(state.calender.reminders);
-    const startOfDate = date.set("hour", 0).set("minute", 0).set("second", 0);
-    const endOfDate = date.set("hour", 24).set("minute", 59).set("second", 59);
-    const filterDates = reminderDates.filter(
-      (date) =>
-        dayjs(date).isAfter(startOfDate) && dayjs(date).isBefore(endOfDate)
-    );
-    return filterDates
+    const startOfDate = date.startOf("day");
+    const endOfDate = date.endOf("day");
+    const dayReminders = Object.keys(state.calender.reminders)
+      .filter(
+        (date) =>
+          dayjs(date).isAfter(startOfDate) && dayjs(date).isBefore(endOfDate)
+      )
       .map((date) => state.calender.reminders[date])
       .sort((a, b) => {
         if (a.date > b.date) {
@@ -28,12 +27,13 @@ export const Date = ({ date, isGrayOut }) => {
         }
         return 0;
       });
+    return dayReminders;
   });
 
   const [visible, setVisible] = useState(false);
 
   const showModal = (e) => {
-    if (!visible && e.target.id !== "reminder") {
+    if (!visible) {
       dispatch(setSelectedDate({ date: date.format(), type: "new" }));
       setVisible(true);
     }
@@ -44,7 +44,7 @@ export const Date = ({ date, isGrayOut }) => {
       <Modal visible={visible} setVisible={setVisible} />
       <div
         className={`${dayNum}`}
-        style={{ backgroundColor: isGrayOut ? "gray" : "" }}
+        style={{ backgroundColor: isGrayOut ? "#e4e9f0" : "" }}
       >
         {/* if it is current day, add a white background */}
         {date.isToday() && (

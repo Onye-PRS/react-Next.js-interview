@@ -6,6 +6,8 @@ import isToday from "dayjs/plugin/isToday";
 import { Date } from "./Date";
 // css
 import styles from "./cal.module.scss";
+import { Button, Space } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 dayjs.extend(isToday);
 const now = dayjs();
 export const Calendar = () => {
@@ -21,11 +23,7 @@ export const Calendar = () => {
   const weeksToDisplay = Math.ceil(remainDays / 7);
   const daysOfAWeek = Array.from({ length: 7 }, (v, i) => i);
   const weeks = Array.from({ length: weeksToDisplay + 1 }, (v, i) => i);
-  const lastDay = currentMonth.endOf("month").day();
   let dayCounter = -1;
-
-  console.log("DAYS IN MONTH", daysInMonth);
-  console.log("END OF MONTH day", lastDay);
 
   const renderDay = (date, isGrayOut) => {
     return <Date date={date} isGrayOut={isGrayOut} />;
@@ -37,9 +35,24 @@ export const Calendar = () => {
   return (
     <div>
       <div className={styles.calYears}>
-        <button onClick={() => changeMonth(-1)}>⬅️</button>
-        <h2>{currentMonth.format("MMMM YYYY")}</h2>
-        <button onClick={() => changeMonth(1)}>➡️</button>
+        <div>{currentMonth.format("MMMM YYYY")}</div>
+        <Space>
+          <Button
+            onClick={() => changeMonth(-1)}
+            icon={<LeftOutlined />}
+            type="link"
+            size="large"
+          />
+          <Button onClick={() => setCurrentMonth(now)} type="link" size="large">
+            Today
+          </Button>
+          <Button
+            onClick={() => changeMonth(1)}
+            icon={<RightOutlined />}
+            type="link"
+            size="large"
+          />
+        </Space>
       </div>
       <div className={styles.calHeader}>
         {weekdaysShort.map((dayName) => {
