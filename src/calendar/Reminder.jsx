@@ -4,6 +4,7 @@ import { deleteReminder } from "../redux/remindersSlice";
 import { Tag } from "antd";
 import { colorMap } from "../util/colorMap";
 import styles from "./reminder.module.scss"
+import dayjs from 'dayjs'
 
 export const Reminder = ({ reminder, setVisible }) => {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ export const Reminder = ({ reminder, setVisible }) => {
         style={{ width: "100%" , overflowX: "hidden"}}
         color={colorMap[reminder.color]}
       >
-        {reminder.message}
+        {dayjs(reminder.date).format("hh:mm A")}{" "} <strong>{reminder.message}</strong>
       </Tag>
     </div>
   );
