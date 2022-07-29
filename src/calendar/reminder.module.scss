@@ -1,8 +1,13 @@
 .reminder {
+    position: relative;
     :global {
-        span[aria-label="close"] {
-            float: right;
-            padding-top: 4px;
-        }
+      span[aria-label='close'] {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+      }
     }
-}
+  }
+  
+  
+  
